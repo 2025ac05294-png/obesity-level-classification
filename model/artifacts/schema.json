@@ -1,0 +1,57 @@
+{
+  "label_column": "NObeyesdad",
+  "feature_columns": [
+    "Gender",
+    "Age",
+    "family_history_with_overweight",
+    "FAVC",
+    "FCVC",
+    "NCP",
+    "CAEC",
+    "SMOKE",
+    "CH2O",
+    "SCC",
+    "FAF",
+    "TUE",
+    "CALC",
+    "MTRANS"
+  ],
+  "numeric_columns": [
+    "Age",
+    "FCVC",
+    "NCP",
+    "CH2O",
+    "FAF",
+    "TUE"
+  ],
+  "categorical_columns": [
+    "Gender",
+    "family_history_with_overweight",
+    "FAVC",
+    "CAEC",
+    "SMOKE",
+    "SCC",
+    "CALC",
+    "MTRANS"
+  ],
+  "class_labels": [
+    "Insufficient_Weight",
+    "Normal_Weight",
+    "Obesity_Type_I",
+    "Obesity_Type_II",
+    "Obesity_Type_III",
+    "Overweight_Level_I",
+    "Overweight_Level_II"
+  ],
+  "dropped_columns": [
+    "Height",
+    "Weight"
+  ],
+  "artifacts": {
+    "Logistic Regression": "logistic_regression.joblib",
+    "Decision Tree": "decision_tree.joblib",
+    "kNN": "knn.joblib",
+    "Naive Bayes": "naive_bayes.joblib",
+    "Random Forest (Ensemble)": "random_forest_ensemble.joblib"
+  }
+}
