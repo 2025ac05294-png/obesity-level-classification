@@ -2,7 +2,9 @@
 
 Machine Learning Assignment 2 — M.Tech (AIML/DSE), WILP Division, BITS Pilani.
 
-Live app: _<add your Streamlit Community Cloud URL here>_
+Live app: https://obesity-level-classification-oqharg5xe7g9a2f2yhmwbu.streamlit.app/
+
+Repository: https://github.com/2025ac05294-png/obesity-level-classification
 
 ---
 
