@@ -96,7 +96,7 @@ reported so that no single class can dominate the score.
 
 ## c. GitHub repository link
 
-_<add your repository URL here>_
+https://github.com/2025ac05294-png/obesity-level-classification
 
 ```
 project-folder/
