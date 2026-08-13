@@ -38,11 +38,22 @@ from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from sklearn.tree import DecisionTreeClassifier
 
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
-RAW_CSV = PROJECT_ROOT / "data" / "ObesityDataSet_raw_and_data_sinthetic.csv"
-ARTIFACT_DIR = Path(__file__).resolve().parent / "artifacts"
-METRICS_CSV = Path(__file__).resolve().parent / "metrics.csv"
+SCRIPT_DIR = Path(__file__).resolve().parent
+# In the repository this file lives in model/, so outputs belong one level up.
+# If the script has been copied out on its own, keep every output beside it
+# rather than scattering files into the parent directory.
+IN_REPO_LAYOUT = SCRIPT_DIR.name == "model"
+PROJECT_ROOT = SCRIPT_DIR.parent if IN_REPO_LAYOUT else SCRIPT_DIR
+CSV_NAME = "ObesityDataSet_raw_and_data_sinthetic.csv"
+RAW_CSV = PROJECT_ROOT / "data" / CSV_NAME
+ARTIFACT_DIR = SCRIPT_DIR / "artifacts"
+METRICS_CSV = SCRIPT_DIR / "metrics.csv"
 TEST_CSV = PROJECT_ROOT / "test_data.csv"
+
+UCI_ZIP_URL = (
+    "https://archive.ics.uci.edu/static/public/544/estimation+of+obesity+levels"
+    "+based+on+eating+habits+and+physical+condition.zip"
+)
 
 LABEL_COLUMN = "NObeyesdad"
 LEAKY_COLUMNS = ["Height", "Weight"]
@@ -50,9 +61,35 @@ HOLDOUT_FRACTION = 0.2
 SEED = 7
 
 
+def locate_dataset() -> Path:
+    """Find the raw CSV, tolerating a flat copy of this script.
+
+    Checked in order: the repository layout, next to the script, and the current
+    working directory. If none exist the file is fetched from UCI, so the script
+    also runs standalone on a machine with only this file on it.
+    """
+    for candidate in (RAW_CSV, SCRIPT_DIR / CSV_NAME, SCRIPT_DIR / "data" / CSV_NAME,
+                      Path.cwd() / CSV_NAME, Path.cwd() / "data" / CSV_NAME):
+        if candidate.exists():
+            return candidate
+
+    import io
+    import urllib.request
+    import zipfile
+
+    print(f"Dataset not found locally; downloading from {UCI_ZIP_URL}")
+    request = urllib.request.Request(UCI_ZIP_URL, headers={"User-Agent": "Mozilla/5.0"})
+    with urllib.request.urlopen(request, timeout=120) as response:
+        archive = zipfile.ZipFile(io.BytesIO(response.read()))
+    RAW_CSV.parent.mkdir(parents=True, exist_ok=True)
+    RAW_CSV.write_bytes(archive.read(CSV_NAME))
+    print(f"Saved to {RAW_CSV}")
+    return RAW_CSV
+
+
 def load_habits_frame() -> pd.DataFrame:
     """Read the raw UCI export and strip the BMI-derived columns."""
-    frame = pd.read_csv(RAW_CSV)
+    frame = pd.read_csv(locate_dataset())
     return frame.drop(columns=LEAKY_COLUMNS)
 
 
